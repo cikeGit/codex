@@ -318,3 +318,11 @@ Tests and features must support Linux, macOS and Windows unless feature is expli
 
 Codex supports running connected app-server and exec-server on different operating systems. See the
 `$remote-tests` skill for details about integration testing these configurations.
+
+## Cursor Cloud specific instructions
+
+- The Rust toolchain is pinned in `codex-rs/rust-toolchain.toml`. Linux package builds need `pkg-config`, `libssl-dev`, `libcap-dev`, `libasound2-dev`, and `bubblewrap`. `libssl-dev` is required because some crates link system OpenSSL; without it, `openssl-sys` fails during `cargo build`.
+- Helper CLIs used by the root justfile are `just` 1.51.0 (the CI pin), `cargo-nextest`, and `dotslash`. `cargo-insta` is used for TUI snapshot tests.
+- From the repository root, run crate tests with `just test -p <crate>` (for example `just test -p codex-utils-string`). Build the CLI from `codex-rs` with `cargo build --bin codex`.
+- A full `just test` compiles the whole workspace. Prefer a crate-scoped run unless the complete suite is required.
+- `codex-rs/target/debug/codex --version`, `codex login status`, `codex features list`, and `codex sandbox -- <cmd>` work without model credentials. `codex doctor` reports local health and exits non-zero when auth is missing. Live `codex exec` prompts need ChatGPT login or an API key.
